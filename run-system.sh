@@ -18,6 +18,9 @@ docker run --detach \
     --env POSTGRES_DB=music-store \
     postgres
 
+# Build Seeder image 
+docker build --target seeder -t seeder .
+
 # docker build -t assignment-demo:1.0 ./sample-app/
 # 
 # docker run -d --name assignment \
