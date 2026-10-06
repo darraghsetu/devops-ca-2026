@@ -7,7 +7,8 @@ docker stop $(docker ps -aq --filter "label=cleanup")
 docker rm $(docker ps -aq --filter "label=cleanup")
 
 # Remove all images by name
-docker rmi postgres:latest
+# Commented out during dev
+# docker rmi postgres:latest
 
 # Remove custom bridge network
 docker network rm CA-network
