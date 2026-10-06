@@ -1,15 +1,24 @@
 #!/bin/sh
 
+echo
+echo "## Cleanup ##"
+
 # Stop all containers with 'cleanup' label
-docker stop $(docker ps -aq --filter "label=cleanup")
+echo "Stopping all containers."
+docker stop $(docker ps -aq --filter "label=cleanup") > /dev/null 2>&1
 
 # Remove all containers with 'cleanup' label
-docker rm $(docker ps -aq --filter "label=cleanup")
+echo "Removing all 'cleanup' tagged containers." 
+docker rm $(docker ps -aq --filter "label=cleanup") > /dev/null 2>&1
 
 # Remove all images by name
 # Commented out during dev
+
+# echo "Removing postgres image."
 # docker rmi postgres:latest
-docker rmi seeder:latest
+echo "Removing seeder image."
+docker rmi seeder:latest > /dev/null 2>&1
 
 # Remove custom bridge network
-docker network rm CA-network
+echo "Removing custom network"
+docker network rm CA-network > /dev/null 2>&1

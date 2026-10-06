@@ -7,8 +7,11 @@ DB_USERNAME="user"
 DB_PASSWORD="password"
 DB_NAME="music-store"
 
+echo
+echo "## run-system ##"
+
 # Create bridge network
-echo "Creating network: ${NETWORK_NAME}"
+echo "Creating custom network: '${NETWORK_NAME}'."
 docker network create $NETWORK_NAME > /dev/null 2>&1
 
 # Pull images
@@ -18,7 +21,7 @@ docker network create $NETWORK_NAME > /dev/null 2>&1
 # docker pull postgres:latest > /dev/null 2>&1
 
 # Run postgres container
-echo "Starting postgres container"
+echo "Starting postgres container."
 docker run \
     --detach \
     --name database \
@@ -34,7 +37,7 @@ docker run \
     postgres:latest > /dev/null 2>&1
 
 # Build seeder image
-echo "Building Seeder image"
+echo "Building Seeder image."
 docker build --target seeder -t seeder . > /dev/null 2>&1
 
 # Wait for postgres to initialise
