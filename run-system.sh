@@ -9,7 +9,8 @@ docker network create CA-network
 docker pull postgres:latest
 
 # Run Postgres container
-docker run --detach \
+docker run \
+    --detach \
     --name database \
     --label cleanup \
     --network CA-network \
@@ -20,6 +21,16 @@ docker run --detach \
 
 # Build Seeder image 
 docker build --target seeder -t seeder .
+
+# Run Seeder container
+docker run \
+    --detatch \ 
+    --rm \
+    --network CA-network \
+    --volume ./Chinook.db:/app/Chinook.db \
+    --env SQLITE_FILE=/app/Chinook.db \
+    --env DATABASE_URL=postgres://user:secret@database:5432/music-store \
+    seeder:latest
 
 # docker build -t assignment-demo:1.0 ./sample-app/
 # 
