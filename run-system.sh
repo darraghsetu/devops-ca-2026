@@ -7,14 +7,11 @@ DB_USERNAME="user"
 DB_PASSWORD="password"
 DB_NAME="music-store"
 
-echo
-echo "## run-system ##"
-echo
+echo "\n## run-system ##\n"
 
 # Create bridge network
-echo "1. Creating custom network: '${NETWORK_NAME}'."
+echo "1. Creating custom network: '${NETWORK_NAME}'.\n"
 docker network create $NETWORK_NAME > /dev/null 2>&1
-echo
 
 # Pull images
 
@@ -23,9 +20,8 @@ echo "2. Pulling images from Docker Hub:"
 echo "  - postgres:latest"
 docker pull postgres:latest > /dev/null 2>&1
 
-echo "  - docker/mcp-gateway:latest"
+echo "  - docker/mcp-gateway:latest\n"
 docker pull docker/mcp-gateway:latest > /dev/null 2>&1
-echo
 
 # Build images
 
@@ -34,12 +30,11 @@ echo "3. Building images from Dockerfile:"
 echo "  - seeder"
 docker build --target seeder -t seeder . > /dev/null 2>&1
 
-echo "  - agent"
+echo "  - agent\n"
 docker build --target agent -t agent . > /dev/null 2>&1
-echo
 
 # Run postgres container
-echo "4. Starting postgres container."
+echo "4. Starting postgres container.\n"
 docker run \
     --detach \
     --name database \
@@ -54,8 +49,6 @@ docker run \
     --health-retries=5 \
     postgres:latest > /dev/null 2>&1
 
-echo
-
 # Wait until postgres initialises 
 echo "5. Waiting for postgres to accept connections."
 
@@ -69,12 +62,11 @@ while [ $DB_STATUS != "healthy" ] && [ $DB_HEALTHCHECK_RETRIES -lt 5 ]; do
 done
 
 if [ $DB_STATUS != "healthy" ]; then
-    echo "  - Database failed to initialise."
+    echo "  - Database failed to initialise.\n"
     exit 1
 fi
 
-echo "  - Postgres is ready to accept connections."
-echo
+echo "  - Postgres is ready to accept connections.\n"
 
 # Run seeder container
 echo "6. Running seeder container."
@@ -90,15 +82,14 @@ docker run \
 DB_HAS_DATA=$(docker exec -i database psql -U ${DB_USERNAME} -d ${DB_NAME} -tA -c 'SELECT EXISTS (SELECT 1 FROM artist);')
 
 if [ $DB_HAS_DATA != 't' ]; then
-    echo "  - Failed to seed database."
+    echo "  - Failed to seed database.\n"
     exit 1
 fi
 
-echo "  - Database has been successfully seeded."
-echo
+echo "  - Database has been successfully seeded.\n"
 
 # Run mcp gateway container
-echo "7. Running MCP gateway container."
+echo "7. Running MCP gateway container.\n"
 docker run \
     --detach \
     --name mcp-gateway \
@@ -116,13 +107,9 @@ docker run \
     --config=/mcp_config.yaml \
     > /dev/null 2>&1
 
-echo
-
 # Run agent container
-echo "8. Running agent container."
-echo
-echo "### Agent Output ###"
-echo 
+echo "8. Running agent container.\n"
+echo "### Agent Output ###\n"
 
 docker run \
     --name agent \
