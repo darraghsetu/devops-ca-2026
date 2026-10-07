@@ -9,21 +9,37 @@ DB_NAME="music-store"
 
 echo
 echo "## run-system ##"
+echo
 
 # Create bridge network
-echo "Creating custom network: '${NETWORK_NAME}'."
+echo "1. Creating custom network: '${NETWORK_NAME}'."
 docker network create $NETWORK_NAME > /dev/null 2>&1
+echo
 
 # Pull images
 
-echo "Pulling postgres image from Docker Hub."
+echo "2. Pulling images from Docker Hub:"
+
+echo "  - postgres:latest"
 docker pull postgres:latest > /dev/null 2>&1
 
-echo "Pulling MCP gateway image from Docker Hub."
+echo "  - docker/mcp-gateway:latest"
 docker pull docker/mcp-gateway:latest > /dev/null 2>&1
+echo
+
+# Build images
+
+echo "3. Building images from Dockerfile:"
+
+echo "  - seeder"
+docker build --target seeder -t seeder . > /dev/null 2>&1
+
+echo "  - agent"
+docker build --target agent -t agent . > /dev/null 2>&1
+echo
 
 # Run postgres container
-echo "Starting postgres container."
+echo "4. Starting postgres container."
 docker run \
     --detach \
     --name database \
@@ -38,12 +54,10 @@ docker run \
     --health-retries=5 \
     postgres:latest > /dev/null 2>&1
 
-# Build seeder image
-echo "Building seeder image."
-docker build --target seeder -t seeder . > /dev/null 2>&1
+echo
 
-# Wait for postgres to initialise
-echo "Waiting for postgres to accept connections."
+# Wait until postgres initialises 
+echo "5. Waiting for postgres to accept connections."
 
 DB_HEALTHCHECK_RETRIES=0
 DB_STATUS=$(docker inspect --format='{{.State.Health.Status}}' database)
@@ -55,14 +69,15 @@ while [ $DB_STATUS != "healthy" ] && [ $DB_HEALTHCHECK_RETRIES -lt 5 ]; do
 done
 
 if [ $DB_STATUS != "healthy" ]; then
-    echo "Database failed to initialise."
+    echo "  - Database failed to initialise."
     exit 1
 fi
 
-echo "Postgres is ready to accept connections."
+echo "  - Postgres is ready to accept connections."
+echo
 
 # Run seeder container
-echo "Running seeder container."
+echo "6. Running seeder container."
 docker run \
     --rm \
     --network $NETWORK_NAME \
@@ -75,14 +90,15 @@ docker run \
 DB_HAS_DATA=$(docker exec -i database psql -U ${DB_USERNAME} -d ${DB_NAME} -tA -c 'SELECT EXISTS (SELECT 1 FROM artist);')
 
 if [ $DB_HAS_DATA != 't' ]; then
-    echo "Failed to seed database."
+    echo "  - Failed to seed database."
     exit 1
 fi
 
-echo "Database has been successfully seeded."
+echo "  - Database has been successfully seeded."
+echo
 
 # Run mcp gateway container
-echo "Running MCP gateway container."
+echo "7. Running MCP gateway container."
 docker run \
     --detach \
     --name mcp-gateway \
@@ -100,12 +116,10 @@ docker run \
     --config=/mcp_config.yaml \
     > /dev/null 2>&1
 
-# Build agent image
-echo "Building agent image."
-docker build --target agent -t agent . > /dev/null 2>&1
+echo
 
 # Run agent container
-echo "Running agent container."
+echo "8. Running agent container."
 echo
 echo "### Agent Output ###"
 echo 
