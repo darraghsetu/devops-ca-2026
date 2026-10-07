@@ -97,7 +97,13 @@ docker run \
     --allow-unauthenticated \
     --servers=cockroachdb \
     --tools=execute_query \
-    --config=/mcp_config.yaml
+    --config=/mcp_config.yaml \
+    > /dev/null 2>&1
+
+# Build agent image
+echo "Building agent image."
+docker build --target agent -t agent . > /dev/null 2>&1
+
 
 # docker build -t assignment-demo:1.0 ./sample-app/
 # 

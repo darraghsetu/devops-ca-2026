@@ -15,11 +15,11 @@ docker rm $(docker ps -aq --filter "label=cleanup") > /dev/null 2>&1
 # Commented out during dev
 
 echo "Removing postgres image."
-# docker rmi postgres:latest
+# docker rmi postgres:latest > /dev/null 2>&1
 echo "Removing mcp gateway image."
-# docker rmi docker/mcp-gateway:latest
+# docker rmi docker/mcp-gateway:latest > /dev/null 2>&1
 echo "Removing cockroachdb image."
-# docker rmi $(docker images --filter "reference=mcp/cockroachdb*" -q)
+# docker rmi $(docker images --filter "reference=mcp/cockroachdb*" -q) > /dev/null 2>&1
 echo "Removing seeder image."
 docker rmi seeder:latest > /dev/null 2>&1
 
