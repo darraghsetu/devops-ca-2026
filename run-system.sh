@@ -82,6 +82,23 @@ fi
 
 echo "Database has been successfully seeded."
 
+# Run mcp gateway container
+echo "Running MCP gateway container."
+docker run \
+    --detach \
+    --name mcp-gateway \
+    --label cleanup \
+    --volume /var/run/docker.sock:/var/run/docker.sock \
+    --volume ./mcp_config.yaml:/mcp_config.yaml \
+    --volume ./mcp_secret.env:/run/secrets/database-url \
+    docker/mcp-gateway:latest \
+    --transport=sse \
+    --secrets=/run/secrets/database-url \
+    --allow-unauthenticated \
+    --servers=cockroachdb \
+    --tools=execute_query \
+    --config=/mcp_config.yaml
+
 # docker build -t assignment-demo:1.0 ./sample-app/
 # 
 # docker run -d --name assignment \

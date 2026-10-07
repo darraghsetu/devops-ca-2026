@@ -18,6 +18,8 @@ echo "Removing postgres image."
 # docker rmi postgres:latest
 echo "Removing mcp gateway image."
 # docker rmi docker/mcp-gateway:latest
+echo "Removing cockroachdb image."
+# docker rmi $(docker images --filter "reference=mcp/cockroachdb*" -q)
 echo "Removing seeder image."
 docker rmi seeder:latest > /dev/null 2>&1
 

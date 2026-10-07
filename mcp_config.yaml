@@ -1,6 +1,6 @@
 cockroachdb:
-  host: [DATABASE_DOMAIN_NAME]
+  host: database 
   port: 5432
-  database: [DATABASE_NAME]
-  username: [DATABASE_USERNAME]
+  database: movie-store 
+  username: user 
   ssl_mode: disable
