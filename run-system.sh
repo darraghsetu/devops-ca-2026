@@ -66,7 +66,7 @@ echo "Postgres is ready to accept connections."
 echo "Running seeder container."
 docker run \
     --rm \
-    --network CA-network \
+    --network $NETWORK_NAME \
     --volume ./Chinook.db:/app/Chinook.db \
     --env SQLITE_FILE=/app/Chinook.db \
     --env DATABASE_URL=postgres://${DB_USERNAME}:${DB_PASSWORD}@database:5432/${DB_NAME} \
@@ -88,6 +88,7 @@ docker run \
     --detach \
     --name mcp-gateway \
     --label cleanup \
+    --network $NETWORK_NAME \
     --volume /var/run/docker.sock:/var/run/docker.sock \
     --volume ./mcp_config.yaml:/mcp_config.yaml \
     --volume ./mcp_secret.env:/run/secrets/database-url \
@@ -104,12 +105,29 @@ docker run \
 echo "Building agent image."
 docker build --target agent -t agent . > /dev/null 2>&1
 
+# Run agent container
+echo "Running agent container."
+echo
+echo "### Agent Output ###"
+echo 
+
+docker run \
+    --name agent \
+    --label cleanup \
+    --network $NETWORK_NAME \
+    --volume ./secret.ollama-api-key:/run/secrets/openai-api-key \
+    --env MCP_SERVER_URL=http://mcp-gateway:8811/sse \
+    --env DATABASE_DIALECT=PostgreSQL \
+    --env QUESTION="What are the top 3 albums by sales?" \
+    --env OPENAI_API_BASE_URL="https://ollama.com/v1" \
+    --env OPENAI_MODEL_NAME="gpt-oss:20b" \
+    agent:latest
 
 # docker build -t assignment-demo:1.0 ./sample-app/
-# 
+#  
 # docker run -d --name assignment \
 #        -p 3000:80 \
 #     assignment-demo:1.0
-# 
+#  
 # sleep 10
 # echo "Container started"
