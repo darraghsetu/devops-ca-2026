@@ -1,7 +1,6 @@
 #!/bin/sh
 
-echo
-echo "## Cleanup ##"
+echo "\n## Cleanup ##"
 
 # Stop all containers with 'cleanup' label
 echo "Stopping all 'cleanup' tagged containers."
@@ -12,34 +11,41 @@ echo "Removing all 'cleanup' tagged containers."
 docker rm $(docker ps -aq --filter "label=cleanup") > /dev/null 2>&1
 
 # Remove all images by name
+echo "Removing images:"
 
-echo "Removing postgres image."
+echo "  - postgres"
 docker rmi postgres:latest > /dev/null 2>&1
-echo "Removing mcp gateway image."
+
+echo "  - mcp-gateway"
 docker rmi docker/mcp-gateway:latest > /dev/null 2>&1
-echo "Removing cockroachdb image."
+
+echo "  - cockroachdb"
 docker rmi $(docker images --filter "reference=mcp/cockroachdb*" -q) > /dev/null 2>&1
-echo "Removing seeder image."
+
+echo "  - seeder"
 docker rmi seeder:latest > /dev/null 2>&1
-echo "Removing agent image."
+
+echo "  - agent"
 docker rmi agent:latest > /dev/null 2>&1
 
+# Prune unattached volumes
+echo "Removing unattached volumes"
+docker volume prune --all --force #> /dev/null 2>&1
+
 # Remove custom bridge network
-echo "Removing custom network."
+echo "Removing custom network: CA-network"
 docker network rm CA-network > /dev/null 2>&1
 
-echo
-echo "## Verification ##"
-echo 
+echo "\n## Verification ##"
 
-echo "Containers:"
+echo "\nContainers:"
 docker ps -a
-echo
 
-echo "Images:"
+echo "\nImages:"
 docker images
-echo
 
-echo "Networks:"
+echo "\nVolumes:"
+docker volume list
+
+echo "\nNetworks:"
 docker network list
-echo
