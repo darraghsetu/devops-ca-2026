@@ -17,8 +17,11 @@ docker network create $NETWORK_NAME > /dev/null 2>&1
 # Pull images
 # Commented out during dev
 
-# echo "Pulling postgres image from Dockerhub"
+echo "Pulling postgres image from Docker Hub."
 # docker pull postgres:latest > /dev/null 2>&1
+
+echo "Pulling MCP gateway image from Docker Hub."
+# docker pull docker/mcp-gateway:latest > /dev/null 2>&1
 
 # Run postgres container
 echo "Starting postgres container."

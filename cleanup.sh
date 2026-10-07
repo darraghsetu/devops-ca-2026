@@ -4,7 +4,7 @@ echo
 echo "## Cleanup ##"
 
 # Stop all containers with 'cleanup' label
-echo "Stopping all containers."
+echo "Stopping all 'cleanup' tagged containers."
 docker stop $(docker ps -aq --filter "label=cleanup") > /dev/null 2>&1
 
 # Remove all containers with 'cleanup' label
