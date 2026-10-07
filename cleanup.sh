@@ -14,8 +14,10 @@ docker rm $(docker ps -aq --filter "label=cleanup") > /dev/null 2>&1
 # Remove all images by name
 # Commented out during dev
 
-# echo "Removing postgres image."
+echo "Removing postgres image."
 # docker rmi postgres:latest
+echo "Removing mcp gateway image."
+# docker rmi docker/mcp-gateway:latest
 echo "Removing seeder image."
 docker rmi seeder:latest > /dev/null 2>&1
 
