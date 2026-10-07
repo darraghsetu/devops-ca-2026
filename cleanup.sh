@@ -12,12 +12,11 @@ echo "Removing all 'cleanup' tagged containers."
 docker rm $(docker ps -aq --filter "label=cleanup") > /dev/null 2>&1
 
 # Remove all images by name
-# Commented out during dev
 
 echo "Removing postgres image."
-# docker rmi postgres:latest > /dev/null 2>&1
+docker rmi postgres:latest > /dev/null 2>&1
 echo "Removing mcp gateway image."
-# docker rmi docker/mcp-gateway:latest > /dev/null 2>&1
+docker rmi docker/mcp-gateway:latest > /dev/null 2>&1
 echo "Removing cockroachdb image."
 docker rmi $(docker images --filter "reference=mcp/cockroachdb*" -q) > /dev/null 2>&1
 echo "Removing seeder image."
@@ -28,3 +27,19 @@ docker rmi agent:latest > /dev/null 2>&1
 # Remove custom bridge network
 echo "Removing custom network."
 docker network rm CA-network > /dev/null 2>&1
+
+echo
+echo "## Verification ##"
+echo 
+
+echo "Containers:"
+docker ps -a
+echo
+
+echo "Images:"
+docker images
+echo
+
+echo "Networks:"
+docker network list
+echo

@@ -15,13 +15,12 @@ echo "Creating custom network: '${NETWORK_NAME}'."
 docker network create $NETWORK_NAME > /dev/null 2>&1
 
 # Pull images
-# Commented out during dev
 
 echo "Pulling postgres image from Docker Hub."
-# docker pull postgres:latest > /dev/null 2>&1
+docker pull postgres:latest > /dev/null 2>&1
 
 echo "Pulling MCP gateway image from Docker Hub."
-# docker pull docker/mcp-gateway:latest > /dev/null 2>&1
+docker pull docker/mcp-gateway:latest > /dev/null 2>&1
 
 # Run postgres container
 echo "Starting postgres container."
@@ -122,12 +121,3 @@ docker run \
     --env OPENAI_API_BASE_URL="https://ollama.com/v1" \
     --env OPENAI_MODEL_NAME="gpt-oss:20b" \
     agent:latest
-
-# docker build -t assignment-demo:1.0 ./sample-app/
-#  
-# docker run -d --name assignment \
-#        -p 3000:80 \
-#     assignment-demo:1.0
-#  
-# sleep 10
-# echo "Container started"
