@@ -19,10 +19,12 @@ echo "Removing postgres image."
 echo "Removing mcp gateway image."
 # docker rmi docker/mcp-gateway:latest > /dev/null 2>&1
 echo "Removing cockroachdb image."
-# docker rmi $(docker images --filter "reference=mcp/cockroachdb*" -q) > /dev/null 2>&1
+docker rmi $(docker images --filter "reference=mcp/cockroachdb*" -q) > /dev/null 2>&1
 echo "Removing seeder image."
 docker rmi seeder:latest > /dev/null 2>&1
+echo "Removing agent image."
+docker rmi agent:latest > /dev/null 2>&1
 
 # Remove custom bridge network
-echo "Removing custom network"
+echo "Removing custom network."
 docker network rm CA-network > /dev/null 2>&1
