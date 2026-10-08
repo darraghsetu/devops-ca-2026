@@ -2,6 +2,11 @@
 
 echo "\n## Cleanup ##"
 
+TEMP_FILE=$(mktemp)
+trap 'rm $TEMP_FILE' EXIT
+
+docker system df > $TEMP_FILE
+
 # Stop all containers with 'cleanup' label
 echo "\n1. Stopping all 'cleanup' tagged containers."
 docker stop $(docker ps -aq --filter "label=cleanup") > /dev/null 2>&1
@@ -41,4 +46,9 @@ echo "\n6. Removing custom network: CA-network"
 docker network rm CA-network > /dev/null 2>&1
 
 echo "\n## Verification ##\n"
+
+echo "Before:\n"
+cat $TEMP_FILE
+
+echo "\nAfter:\n"
 docker system df
