@@ -73,7 +73,7 @@ echo "6. Running seeder container."
 docker run \
     --rm \
     --network $NETWORK_NAME \
-    --volume ./Chinook.db:/app/Chinook.db \
+    --volume ./Chinook.db:/app/Chinook.db:ro \
     --env SQLITE_FILE=/app/Chinook.db \
     --env DATABASE_URL=postgres://${DB_USERNAME}:${DB_PASSWORD}@database:5432/${DB_NAME} \
     seeder:latest > /dev/null 2>&1
@@ -96,8 +96,8 @@ docker run \
     --label cleanup \
     --network $NETWORK_NAME \
     --volume /var/run/docker.sock:/var/run/docker.sock \
-    --volume ./mcp_config.yaml:/mcp_config.yaml \
-    --volume ./mcp_secret.env:/run/secrets/database-url \
+    --volume ./mcp_config.yaml:/mcp_config.yaml:ro \
+    --volume ./mcp_secret.env:/run/secrets/database-url:ro \
     docker/mcp-gateway:latest \
     --transport=sse \
     --secrets=/run/secrets/database-url \
@@ -115,7 +115,7 @@ docker run \
     --name agent \
     --label cleanup \
     --network $NETWORK_NAME \
-    --volume ./secret.ollama-api-key:/run/secrets/openai-api-key \
+    --volume ./secret.ollama-api-key:/run/secrets/openai-api-key:ro \
     --env MCP_SERVER_URL=http://mcp-gateway:8811/sse \
     --env DATABASE_DIALECT=PostgreSQL \
     --env QUESTION="What are the top 3 albums by sales?" \
