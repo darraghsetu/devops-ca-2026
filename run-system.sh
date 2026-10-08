@@ -122,9 +122,3 @@ docker run \
     --env OPENAI_API_BASE_URL="https://ollama.com/v1" \
     --env OPENAI_MODEL_NAME="gpt-oss:20b" \
     agent:latest
-
-read -p "Do you want to proceed with cleanup? [y/n] " RUN_CLEANUP
-
-if [ $RUN_CLEANUP = 'y' ] || [ $RUN_CLEANUP = 'Y' ]; then
-    ./cleanup.sh
-fi

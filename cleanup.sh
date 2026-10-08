@@ -40,19 +40,5 @@ docker builder prune --all --force > /dev/null 2>&1
 echo "\n6. Removing custom network: CA-network"
 docker network rm CA-network > /dev/null 2>&1
 
-echo "\n## Verification ##"
-
-echo "\nContainers:"
-docker ps -a
-
-echo "\nImages:"
-docker images
-
-echo "\nVolumes:"
-docker volume list
-
-echo "\nBuild Cache:"
-docker builder du
-
-echo "\nNetworks:"
-docker network list
+echo "\n## Verification ##\n"
+docker system df
