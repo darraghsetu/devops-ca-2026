@@ -3,15 +3,15 @@
 echo "\n## Cleanup ##"
 
 # Stop all containers with 'cleanup' label
-echo "Stopping all 'cleanup' tagged containers."
+echo "\n1. Stopping all 'cleanup' tagged containers."
 docker stop $(docker ps -aq --filter "label=cleanup") > /dev/null 2>&1
 
 # Remove all containers with 'cleanup' label
-echo "Removing all 'cleanup' tagged containers." 
+echo "\n2. Removing all 'cleanup' tagged containers." 
 docker rm $(docker ps -aq --filter "label=cleanup") > /dev/null 2>&1
 
 # Remove all images by name
-echo "Removing images:"
+echo "\n3. Removing images:"
 
 echo "  - postgres"
 docker rmi postgres:latest > /dev/null 2>&1
@@ -29,11 +29,15 @@ echo "  - agent"
 docker rmi agent:latest > /dev/null 2>&1
 
 # Prune unattached volumes
-echo "Removing unattached volumes"
-docker volume prune --all --force #> /dev/null 2>&1
+echo "\n4. Removing unattached volumes"
+docker volume prune --all --force > /dev/null 2>&1
+
+# Prune build cache
+echo "\n5. Removing build cache"
+docker builder prune --all --force > /dev/null 2>&1
 
 # Remove custom bridge network
-echo "Removing custom network: CA-network"
+echo "\n6. Removing custom network: CA-network"
 docker network rm CA-network > /dev/null 2>&1
 
 echo "\n## Verification ##"
@@ -46,6 +50,9 @@ docker images
 
 echo "\nVolumes:"
 docker volume list
+
+echo "\nBuild Cache:"
+docker builder du
 
 echo "\nNetworks:"
 docker network list
